@@ -22,20 +22,26 @@ void Server::newConnection(SOCKET connection_socket ){
 }
 
 int32_t Server::requestId(Player* player){
+    lockCriticalSection();
     for( int32_t i = 0; i < 1024; i++ ){
         if( players_array[i] == nullptr ){
             players_array[i] = player;
+            unlockCriticalSection();
             return i;
         }
     }
+    unlockCriticalSection();
     return -1;
 }
 
 void Server::freeID(int32_t id){
+    lockCriticalSection();
     players_array[id] = nullptr;
+    unlockCriticalSection();
 }
 
 void Server::syncHandler(){
+    lockCriticalSection();
     for( AbstractConnection* connection_first : connections_list ){
         Player* player_first = static_cast<Player*>(connection_first);
         if( !player_first->isHavePed() )
@@ -53,4 +59,13 @@ void Server::syncHandler(){
             player_second->sendPacket(&packet, sizeof(UpdatePedPacket));
         }
     }
+    unlockCriticalSection();
+}
+
+void Server::lockCriticalSection(){
+    critical_section_mutex.lock();
+}
+
+void Server::unlockCriticalSection(){
+    critical_section_mutex.unlock();
 }

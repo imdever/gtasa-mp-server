@@ -3,11 +3,13 @@
 #include "AbstractListener.h"
 #include "AbstractConnection.h"
 #include "iostream"
+#include "mutex"
 #include "string"
 using namespace std;
 
 class Server: public AbstractListener {
     Player** players_array;
+    std::mutex critical_section_mutex;
     std::thread* server_sync_thread_ptr;
     bool delete_later = false;
     
@@ -19,6 +21,8 @@ public:
     int32_t requestId(Player* player);
     void syncHandler();
 
+    void lockCriticalSection();
+    void unlockCriticalSection();
 protected:
     void newConnection(SOCKET connection_socket ) override;
 };

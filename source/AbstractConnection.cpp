@@ -77,6 +77,7 @@ Packet AbstractConnection::receivePacket(){
 }
 
 void AbstractConnection::sendPacket(void* data, int32_t size){
+    const std::lock_guard<std::mutex> lock(send_mutex);
     if( !isConnected() ){
         // socket is not connected, error!;
         return;
