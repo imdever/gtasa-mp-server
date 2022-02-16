@@ -5,7 +5,7 @@ Server::Server(): AbstractListener(){
     memset(players_array, 0x00, sizeof(Player*) * 1024);
    server_sync_thread_ptr = new thread([this] {
             while (!delete_later) {
-                std::this_thread::sleep_for(std::chrono::microseconds(1000));
+                std::this_thread::sleep_for(std::chrono::microseconds(16000));
                 syncHandler();
             }
             delete this;
