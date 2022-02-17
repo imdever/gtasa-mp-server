@@ -9,7 +9,7 @@ enum class PacketType {
 };
 
 struct Vector3d {
-    double x, y, z;
+    double x = 2495.330078, y = -1676.422485, z = 13.337957;
 };
 
 struct PedInfo {
