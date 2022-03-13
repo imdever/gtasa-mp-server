@@ -10,9 +10,10 @@ class Player;
 
 class Player: public AbstractConnection{
     int32_t ID = -1;
+    int32_t CarID = -1;
     bool have_ped = false;
     PedInfo ped_info;
-
+    std::thread* car_spawn_thread_ptr;
 public:
     Player() = default;
     Player(AbstractConnection connection);
@@ -27,6 +28,7 @@ protected:
 
     void broadcast_createPed();
     void broadcast_deletePed();
+    void SpawnCar();
 
     void createAllServerPeds();
 };

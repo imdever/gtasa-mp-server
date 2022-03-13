@@ -12,7 +12,7 @@ class Server: public AbstractListener {
     std::mutex critical_section_mutex;
     std::thread* server_sync_thread_ptr;
     bool delete_later = false;
-    
+
 public:
     Server();
     ~Server() = default;

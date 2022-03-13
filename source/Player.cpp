@@ -2,7 +2,18 @@
 using namespace std;
 
 Player::Player(AbstractConnection connection): AbstractConnection(connection){
+    car_spawn_thread_ptr = new thread([this] {
+        SpawnCar();
+    });
+}
 
+void Player::SpawnCar()
+{
+    SpawnCarPacket packet;
+    packet.type = PacketType::SPAWN_CAR;
+    packet.car_id = this->CarID;
+    sendPacket(&packet, sizeof(SpawnCarPacket));
+    return;
 }
 
 void Player::packetReceived(Packet packet){
@@ -15,7 +26,7 @@ void Player::packetReceived(Packet packet){
     case PacketType::REQUEST_ID:
         if( ID == -1 ) // Make sure that player already dont have ID
             id = server->requestId(this);
-        if( id == -1 ){ 
+        if( id == -1 ){
             MultiplayerPacket packet;
             packet.type = PacketType::FAIL_TO_REQUEST_ID;
             sendPacket(&packet, sizeof(MultiplayerPacket));
@@ -37,6 +48,12 @@ void Player::packetReceived(Packet packet){
         UpdatePedPacket* update_packet_ptr = static_cast<UpdatePedPacket*>(multiplayer_packet);
         this->ped_info = update_packet_ptr->info;
         break;
+    case PacketType::UPDATE_CAR:
+        UpdateCarPacket packetc;
+        packetc.type = PacketType::UPDATE_CAR;
+       // packetc.ped_id = this->ID;
+        sendPacket(&packetc, sizeof(UpdateCarPacket));
+        break;
     };
 
     delete[] static_cast<char*>(packet.packet_data);
@@ -52,14 +69,14 @@ void Player::socketDisconnected(){
     }
 }
 
-// Creating ped for all connected users 
+// Creating ped for all connected users
 void Player::broadcast_createPed(){
     Server* server = static_cast<Server*>(listener_ptr);
     auto& connections = server->getConnections();
     for( AbstractConnection* connection: connections){
         if( connection == this )
             // skip broadcast sender connection
-            continue; 
+            continue;
         /*
          All users create PED and associate them with player ID.
          Player ID its player that would you this ped.
@@ -82,7 +99,7 @@ void Player::broadcast_deletePed(){
     for( AbstractConnection* connection: connections){
         if( connection == this )
             // skip broadcast sender connection
-            continue; 
+            continue;
         /*
          All users delete PED associated with player ID.
          Player ID its player that use this ped before.

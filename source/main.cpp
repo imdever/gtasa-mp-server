@@ -10,7 +10,7 @@ using namespace std;
 int main(){
     try{
         Server server;
-        server.setListenerParams(ListenerParams{7777, "192.168.0.100"});
+        server.setListenerParams(ListenerParams{7777, "192.168.0.11"});
         server.startListening();
     }catch(string error_message){
         cout << error_message;

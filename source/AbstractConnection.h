@@ -55,16 +55,16 @@ public:
     void deleteThis();
 
 protected:
-    /* 
+    /*
         Override this for complete packet receiving
-        After use packet you need\can free packet memory by free [](char*)(packet_data) 
+        After use packet you need\can free packet memory by free [](char*)(packet_data)
     */
     virtual void packetReceived(Packet packet);
-    /* 
+    /*
         Override this for reacting to socket disconnecting
     */
     virtual void socketDisconnected();
-    /* 
+    /*
         Override this for reacting to socket connecting
     */
     virtual void socketConnected();
